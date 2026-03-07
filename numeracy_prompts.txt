@@ -1,0 +1,36 @@
+{\rtf1\ansi\ansicpg949\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 79 : Three children run along the tracks.\
+\
+82 : Four dogs running through a field.\
+\
+88 : Four rabbits hop through a meadow.\
+\
+91 : Four bears lumber through the woods.\
+\
+93 : Four chairs rock on a porch, creaking with the breeze.\
+\
+103 : Four airplanes fly across the sky.\
+\
+111 : Five cats walking on the floor.\
+\
+115 : Five birds soar through the sky.\
+\
+118 : Five rabbits hop through a meadow.\
+\
+125 : Five apples rolling over the grass.\
+\
+129 : Five pandas munch bamboo in the garden.\
+\
+131 : Five cows amble through the pasture. \
+\
+164 : Two fish swim in the pond, and two frogs sit on lily pads.\
+\
+166 : Three cows graze in the pasture, and on sheep wanders nearby. \
+\
+173 : Three apples hang heavy on the tree branch, and three birds perch nearby.}
