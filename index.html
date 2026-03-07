@@ -210,7 +210,6 @@
         const desc = document.getElementById('criteria-desc');
         const voteLabelC2 = document.getElementById('vote-label-c2');
         
-        // 동적으로 텍스트 교체 및 영문 추가 (Q3 -> Criteria 3)
         if(q.taskType === "motion") {
             title.innerHTML = "Criteria 2: 역동성 <br> <span style='font-size: 0.8rem; font-weight: normal; color: #888;'>Motion Dynamics</span>";
             desc.innerHTML = "동작이 생동감 있게 표현되는가? <br> <i>Is the requested action portrayed with sufficient energy?</i>";
@@ -244,6 +243,23 @@
         }
 
         document.getElementById('progress').style.width = `${((currentIdx) / studyData.length) * 100}%`;
+
+        // ★ 핵심: 현재 영상을 틀자마자, 다음 문항의 영상을 몰래 미리 다운로드 (Preload)
+        preloadNext();
+    }
+
+    // 다음 문항 미리 불러오기 함수 (새로 추가)
+    function preloadNext() {
+        if (currentIdx + 1 < studyData.length) {
+            const nextQ = studyData[currentIdx + 1];
+            const preloaderA = document.createElement('video');
+            preloaderA.preload = 'auto';
+            preloaderA.src = nextQ.videoA;
+            
+            const preloaderB = document.createElement('video');
+            preloaderB.preload = 'auto';
+            preloaderB.src = nextQ.videoB;
+        }
     }
 
     // 투표 로직
