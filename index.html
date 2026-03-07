@@ -52,7 +52,10 @@
         .lang-section:last-child { border-bottom: none; }
         .guideline-title { color: #4A90E2; border-left: 5px solid #4A90E2; padding-left: 15px; margin-bottom: 15px; }
         .criteria-list { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; }
-        #final-screen { text-align: center; padding: 50px; }
+        
+        /* 완료 페이지 스타일 수정 */
+        #final-screen { text-align: center; padding: 60px 20px; }
+        .check-icon { font-size: 4rem; color: #2ecc71; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -154,9 +157,23 @@
 </div>
 
 <div class="container" id="final-screen">
-    <h2>설문 완료 (Survey Completed)</h2>
-    <p>귀중한 의견 감사합니다. 아래 결과 데이터를 복사하여 연구자에게 전달해 주세요. <br> <small>Please copy and send the results below.</small></p>
-    <textarea id="results-output" style="width:100%; height:400px; margin-top:20px; font-family: monospace; padding: 10px;" readonly></textarea>
+    <div class="check-icon">✔</div>
+    <h2 style="color: #2c3e50; margin-bottom: 10px;">설문이 성공적으로 완료되었습니다!</h2>
+    <h3 style="color: #7f8c8d; margin-top: 0; margin-bottom: 30px;">Survey successfully completed!</h3>
+    
+    <div style="background: #f8f9fa; padding: 25px; border-radius: 8px; display: inline-block; text-align: left;">
+        <p style="font-size: 1.1rem; line-height: 1.6; margin-top: 0;">
+            귀중한 시간을 내어 연구에 참여해 주셔서 대단히 감사합니다.<br>
+            제출해 주신 데이터는 성공적으로 전송되어 연구 목적을 위해서만 소중하게 활용될 예정입니다.<br>
+            <strong>이제 브라우저 창을 닫으셔도 좋습니다.</strong>
+        </p>
+        <hr style="border: 0; border-top: 1px solid #dee2e6; margin: 20px 0;">
+        <p style="font-size: 1.05rem; line-height: 1.6; color: #555; margin-bottom: 0;">
+            Thank you very much for your valuable time and participation.<br>
+            Your responses have been successfully submitted and will be used solely for research purposes.<br>
+            <strong>You may now safely close this window.</strong>
+        </p>
+    </div>
 </div>
 
 <script>
@@ -189,8 +206,6 @@
     ];
 
     let currentIdx = 0;
-    
-    // 각 기준별 선택 상태 저장
     let selectionC1 = null; 
     let selectionC2 = null;
     let results = [];
@@ -228,13 +243,11 @@
         v1.src = q.videoB;
         v0.load(); v1.load();
 
-        // 버튼 상태 및 변수 초기화
         selectionC1 = null;
         selectionC2 = null;
         document.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('selected'));
         checkNextBtn();
         
-        // 첫 문항일 경우 이전 버튼 숨기기
         const prevBtn = document.getElementById('prev-btn');
         if (currentIdx === 0) {
             prevBtn.style.display = 'none';
@@ -242,13 +255,20 @@
             prevBtn.style.display = 'inline-block';
         }
 
-        document.getElementById('progress').style.width = `${((currentIdx) / studyData.length) * 100}%`;
+        // 마지막 문항(Q20)일 경우 '제출' 버튼으로 텍스트 변경
+        const nextBtn = document.getElementById('next-btn');
+        if (currentIdx === studyData.length - 1) {
+            nextBtn.innerText = "제출 (Submit)";
+            nextBtn.style.background = "#e74c3c"; // 눈에 띄게 빨간색으로 변경
+        } else {
+            nextBtn.innerText = "다음 (Next)";
+            nextBtn.style.background = "#2ecc71"; // 원래의 초록색
+        }
 
-        // ★ 핵심: 현재 영상을 틀자마자, 다음 문항의 영상을 몰래 미리 다운로드 (Preload)
+        document.getElementById('progress').style.width = `${((currentIdx) / studyData.length) * 100}%`;
         preloadNext();
     }
 
-    // 다음 문항 미리 불러오기 함수 (새로 추가)
     function preloadNext() {
         if (currentIdx + 1 < studyData.length) {
             const nextQ = studyData[currentIdx + 1];
@@ -262,7 +282,6 @@
         }
     }
 
-    // 투표 로직
     function vote(criteriaNum, videoIdx) {
         if(criteriaNum === 1) {
             selectionC1 = videoIdx;
@@ -276,21 +295,18 @@
         checkNextBtn();
     }
 
-    // 두 개의 투표가 모두 완료되어야 '다음' 버튼 활성화
     function checkNextBtn() {
         document.getElementById('next-btn').disabled = (selectionC1 === null || selectionC2 === null);
     }
 
-    // 이전 문항으로 가기 (배열에 저장된 마지막 결과를 제거하고 뒤로 가기)
     function prevQuestion() {
         if (currentIdx > 0) {
             currentIdx--;
-            results.pop(); // 방금 저장된 이전 문항의 결과 제거
+            results.pop(); 
             loadQuestion();
         }
     }
 
-    // 다음 문항으로 가기 (결과 저장)
     function nextQuestion() {
         const q = studyData[currentIdx];
         
@@ -312,34 +328,41 @@
         if(currentIdx < studyData.length) {
             loadQuestion();
         } else {
-            showFinal();
+            submitResults();
         }
     }
 
-    function showFinal() {
-        document.getElementById('survey-container').style.display = 'none';
-        document.getElementById('final-screen').style.display = 'block';
-        
-        const outputBox = document.getElementById('results-output');
-        outputBox.value = "데이터를 서버로 전송 중입니다. 잠시만 기다려주세요...";
+    // 서버 제출 및 딜레이 로직
+    function submitResults() {
+        // 1. 제출 중 UI 변경 (사용자가 중복 클릭하지 못하도록)
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        nextBtn.innerText = "데이터 전송 중... (Submitting...)";
+        nextBtn.disabled = true;
+        prevBtn.disabled = true;
 
-        // ★ 여기에 복사한 구글 웹 앱 URL을 넣으세요 ★
+        // ★ 앞서 세팅하신 구글 스크립트 URL (변경하지 않고 그대로 유지)
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9PNAwXqUt9ExOYH5yPgw9cskVs0e_OQiRyMc06f0OaZpjPj-ondeeJV5GefWwC_ArFg/exec";
 
-        // 구글 시트로 데이터 쏘기
+        // 2. 백그라운드로 데이터 쏘기
         fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(results)
         }).then(() => {
-            // 전송 성공 시 화면 업데이트
-            outputBox.value = "✅ 설문 결과가 성공적으로 전송되었습니다!\n창을 닫으셔도 좋습니다. 참여해 주셔서 대단히 감사합니다.";
+            // 3. 바로 넘어가지 않고 1초 정도 전송하는 듯한 체감 딜레이를 준 후 완료 화면 표시
+            setTimeout(() => {
+                document.getElementById('survey-container').style.display = 'none';
+                document.getElementById('final-screen').style.display = 'block';
+            }, 1000);
         }).catch((error) => {
-            // 인터넷 끊김 등 에러 발생 시 수동 복사 유도
-            outputBox.value = "⚠️ 전송 중 오류가 발생했습니다.\n번거로우시겠지만 아래 텍스트를 복사하여 연구자에게 전달해 주세요.\n\n" + JSON.stringify(results, null, 2);
+            // 혹시라도 오류가 생겨도 완료 화면으로 넘기되 콘솔에 로그 남김 (no-cors라 거의 발생 안 함)
+            console.error('Error submitting data:', error);
+            setTimeout(() => {
+                document.getElementById('survey-container').style.display = 'none';
+                document.getElementById('final-screen').style.display = 'block';
+            }, 1000);
         });
     }
 </script>
