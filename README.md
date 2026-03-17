@@ -1,2 +1,2 @@
 # MotionCFG
-MotionCFG UserStudt Repo.
+MotionCFG Project Page Repo.
